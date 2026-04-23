@@ -2299,8 +2299,8 @@ footer {
     <div class="footer-col">
       <h5>Instructor</h5>
       <p>Davidian / 陳建璋</p>
-      <p style="font-size:12px; color:var(--ink-mute);">University Professor</p>
-      <p style="font-size:12px; color:var(--ink-mute);">Taipei, Taiwan</p>
+      <p style="font-size:12px; color:var(--ink-mute);">Assistant Professor of Practice</p>
+      <p style="font-size:12px; color:var(--ink-mute);">Chinese Culture University, Taipei, Taiwan</p>
     </div>
     <div class="footer-col">
       <h5>Course</h5>
