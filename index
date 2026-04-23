@@ -1,0 +1,2360 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI 協作式數位產品實作 — 一對一家教課程</title>
+<meta name="description" content="六個月 AI 協作式數位產品實作與轉職作品集家教課程。由 Davidian 教授指導。" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+TC:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --paper: #f5f1e8;
+  --paper-warm: #ede6d3;
+  --paper-deep: #e8dfc7;
+  --ink: #1a1a1a;
+  --ink-soft: #2d2a26;
+  --ink-mute: #6b6359;
+  --ink-faint: #a09689;
+  --rule: #d4c9b0;
+  --rule-soft: #e1d6bc;
+  --accent: #b54822;
+  --accent-deep: #8a3617;
+  --accent-soft: #d97349;
+  --gold: #a87f2d;
+  --green: #5a6b3a;
+  --shadow-sm: 0 1px 2px rgba(60, 40, 20, 0.06);
+  --shadow-md: 0 4px 24px rgba(60, 40, 20, 0.08);
+  --shadow-lg: 0 24px 60px rgba(60, 40, 20, 0.12);
+
+  --serif-display: 'Fraunces', 'Noto Serif TC', Georgia, serif;
+  --serif-body: 'Noto Serif TC', 'Fraunces', Georgia, serif;
+  --sans: 'Inter', 'Noto Serif TC', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif-body);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 400;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle paper grain texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(181, 72, 34, 0.02) 0%, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(168, 127, 45, 0.025) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.3 0 0 0 0 0.2 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
+}
+
+.wrap { position: relative; z-index: 2; }
+
+/* ==================== HEADER ==================== */
+header.masthead {
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
+  background: rgba(245, 241, 232, 0.92);
+}
+
+.masthead-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 18px 48px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.brand-mark {
+  font-family: var(--serif-display);
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.brand-mark .dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin: 0 10px;
+  vertical-align: middle;
+}
+
+.brand-center {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.brand-meta {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  text-align: right;
+}
+
+/* ==================== HERO ==================== */
+.hero {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 48px 60px;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: end;
+}
+
+.hero-eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hero-eyebrow::before {
+  content: "";
+  width: 32px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.hero-title {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  font-size: clamp(40px, 6vw, 76px);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 32px;
+}
+
+.hero-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.hero-sub {
+  font-family: var(--serif-body);
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 520px;
+  margin-bottom: 40px;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.hero-meta-item .label {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+
+.hero-meta-item .value {
+  font-family: var(--serif-display);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.hero-meta-item .value em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 400;
+}
+
+/* Editorial right column */
+.hero-aside {
+  position: relative;
+  padding-left: 40px;
+  border-left: 1px solid var(--rule);
+}
+
+.aside-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 24px;
+}
+
+.aside-quote {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 22px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.aside-quote::before {
+  content: "“";
+  font-family: var(--serif-display);
+  font-size: 80px;
+  color: var(--accent);
+  position: absolute;
+  top: -30px;
+  left: -20px;
+  line-height: 1;
+  opacity: 0.4;
+}
+
+.aside-attribution {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-mute);
+  letter-spacing: 0.1em;
+}
+
+.aside-attribution strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* Decorative volume marker */
+.hero-volume {
+  position: absolute;
+  top: 80px;
+  right: 48px;
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-faint);
+  letter-spacing: 0.05em;
+}
+
+/* ==================== TABS ==================== */
+.tabs-bar {
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: 60px;
+  z-index: 90;
+  backdrop-filter: blur(8px);
+  background: rgba(245, 241, 232, 0.94);
+}
+
+.tabs-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs-inner::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 20px 24px;
+  font-family: var(--serif-display);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-mute);
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+  letter-spacing: 0.01em;
+}
+
+.tab-btn .num {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--ink-faint);
+  margin-right: 8px;
+  font-weight: 500;
+}
+
+.tab-btn:hover { color: var(--ink); }
+
+.tab-btn.active { color: var(--ink); }
+
+.tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: -1px;
+  left: 24px;
+  right: 24px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.tab-btn.active .num { color: var(--accent); }
+
+/* ==================== TAB PANELS ==================== */
+.panel {
+  display: none;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 80px 48px 120px;
+  animation: fadeUp 0.5s ease;
+}
+
+.panel.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==================== SECTION STYLING ==================== */
+.section-header {
+  margin-bottom: 48px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 32px;
+  align-items: end;
+}
+
+.section-num {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 64px;
+  font-weight: 300;
+  color: var(--accent);
+  line-height: 1;
+}
+
+.section-title-block .eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+
+.section-title-block h2 {
+  font-family: var(--serif-display);
+  font-weight: 400;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.section-title-block h2 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ==================== OVERVIEW PANEL ==================== */
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 80px;
+}
+
+.stat-card {
+  padding: 32px 28px;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule-soft);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card .label {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 16px;
+}
+
+.stat-card .value {
+  font-family: var(--serif-display);
+  font-size: 56px;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.stat-card .value em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 300;
+}
+
+.stat-card .unit {
+  font-family: var(--serif-body);
+  font-size: 14px;
+  color: var(--ink-mute);
+}
+
+/* Three column read */
+.three-col {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 80px;
+  margin-bottom: 80px;
+  padding-bottom: 80px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.col-header {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  padding-top: 12px;
+  position: sticky;
+  top: 140px;
+  align-self: start;
+}
+
+.col-body p {
+  font-family: var(--serif-body);
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+  margin-bottom: 20px;
+}
+
+.col-body p:first-letter {
+  font-family: var(--serif-display);
+  font-size: 56px;
+  font-weight: 400;
+  float: left;
+  line-height: 0.85;
+  margin-right: 8px;
+  margin-top: 8px;
+  color: var(--accent);
+}
+
+.col-body p + p:first-letter {
+  font-size: inherit;
+  font-weight: inherit;
+  float: none;
+  line-height: inherit;
+  margin: 0;
+  color: inherit;
+}
+
+/* Skills/abilities list */
+.ability-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+}
+
+.ability-list li {
+  font-family: var(--serif-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding-left: 32px;
+  position: relative;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.ability-list li::before {
+  content: counter(ability, decimal-leading-zero);
+  counter-increment: ability;
+  position: absolute;
+  left: 0;
+  top: 2px;
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.ability-list { counter-reset: ability; }
+
+/* Tools grid */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.tool-cell {
+  background: var(--paper);
+  padding: 28px 24px;
+  transition: background 0.2s ease;
+}
+
+.tool-cell:hover { background: var(--paper-warm); }
+
+.tool-cell .name {
+  font-family: var(--serif-display);
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.tool-cell .name .role {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.tool-cell .desc {
+  font-family: var(--serif-body);
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-mute);
+}
+
+/* ==================== CURRICULUM TIMELINE ==================== */
+.month-section {
+  margin-bottom: 80px;
+}
+
+.month-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 24px;
+  align-items: end;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 40px;
+}
+
+.month-num {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 80px;
+  color: var(--accent);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+}
+
+.month-title-group .month-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 8px;
+}
+
+.month-title-group h3 {
+  font-family: var(--serif-display);
+  font-size: 32px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.month-weeks {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  text-align: right;
+}
+
+/* Week cards */
+.weeks-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.week-card {
+  background: var(--paper);
+  padding: 32px 28px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  position: relative;
+}
+
+.week-card:hover {
+  background: var(--paper-warm);
+}
+
+.week-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.week-num {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+.week-hours {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.05em;
+}
+
+.week-card h4 {
+  font-family: var(--serif-display);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 12px;
+  letter-spacing: -0.005em;
+}
+
+.week-theme {
+  font-family: var(--serif-body);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--ink-mute);
+  line-height: 1.5;
+  margin-bottom: 18px;
+}
+
+.week-detail {
+  display: none;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.week-card.expanded .week-detail { display: block; }
+
+.week-card.expanded { background: var(--paper-warm); }
+
+.detail-section {
+  margin-bottom: 20px;
+}
+
+.detail-section:last-child { margin-bottom: 0; }
+
+.detail-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.detail-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.detail-section ul li {
+  font-family: var(--serif-body);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding-left: 16px;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.detail-section ul li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.expand-hint {
+  position: absolute;
+  top: 32px;
+  right: 28px;
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease;
+}
+
+.week-card:hover .expand-hint { color: var(--accent); }
+
+.expand-hint .icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  margin-bottom: 3px;
+  transition: transform 0.3s ease;
+}
+
+.week-card.expanded .expand-hint .icon {
+  transform: rotate(-135deg);
+  margin-bottom: -3px;
+}
+
+/* ==================== PROJECTS PANEL ==================== */
+.project-block {
+  margin-bottom: 80px;
+  padding-bottom: 80px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.project-block:last-child { border-bottom: none; padding-bottom: 0; }
+
+.project-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 32px;
+  align-items: end;
+  margin-bottom: 32px;
+}
+
+.project-tag {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--accent);
+  padding: 8px 16px;
+  border: 1px solid var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.project-title {
+  font-family: var(--serif-display);
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.project-status {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.project-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+}
+
+.project-desc p {
+  font-family: var(--serif-body);
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+}
+
+.project-skills {
+  background: var(--paper-warm);
+  padding: 32px;
+  border-left: 3px solid var(--accent);
+}
+
+.project-skills .label {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.project-skills ul {
+  list-style: none;
+  padding: 0;
+}
+
+.project-skills li {
+  font-family: var(--serif-body);
+  font-size: 14.5px;
+  line-height: 1.6;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  color: var(--ink-soft);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.project-skills li::before {
+  content: "✦";
+  color: var(--accent);
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+.project-skills li:last-child { border-bottom: none; }
+
+/* ==================== DELIVERABLES / EVAL PANELS ==================== */
+.split-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  margin-bottom: 80px;
+}
+
+.deliverable-block {
+  margin-bottom: 32px;
+}
+
+.deliverable-block h4 {
+  font-family: var(--serif-display);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.deliverable-block h4 .num {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.deliverable-block ul {
+  list-style: none;
+  padding: 0;
+}
+
+.deliverable-block li {
+  font-family: var(--serif-body);
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  padding: 8px 0 8px 24px;
+  position: relative;
+}
+
+.deliverable-block li::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 18px;
+}
+
+/* Evaluation breakdown */
+.eval-bar {
+  margin-bottom: 28px;
+  padding: 24px;
+  background: var(--paper-warm);
+  border: 1px solid var(--rule-soft);
+}
+
+.eval-bar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+}
+
+.eval-bar-head h4 {
+  font-family: var(--serif-display);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.eval-percent {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 32px;
+  color: var(--accent);
+  font-weight: 400;
+}
+
+.eval-progress {
+  height: 4px;
+  background: var(--rule);
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.eval-progress .fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.8s ease;
+}
+
+.eval-bar p {
+  font-family: var(--serif-body);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink-mute);
+  margin: 0;
+}
+
+/* ==================== COMMITMENT PULL QUOTE ==================== */
+.commitment {
+  margin: 80px auto 40px;
+  padding: 60px;
+  background: var(--paper-warm);
+  border-top: 4px solid var(--accent);
+  position: relative;
+  text-align: center;
+  max-width: 900px;
+}
+
+.commitment::before {
+  content: "“";
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif-display);
+  font-size: 100px;
+  color: var(--accent);
+  background: var(--paper);
+  padding: 0 20px;
+  line-height: 1;
+}
+
+.commitment-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 24px;
+}
+
+.commitment-text {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(20px, 2.5vw, 28px);
+  line-height: 1.55;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.commitment-text strong {
+  font-style: normal;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.commitment-attr {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* Final state checklist */
+.final-state {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 60px;
+  margin-top: 60px;
+  position: relative;
+}
+
+.final-state .eyebrow {
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  margin-bottom: 16px;
+}
+
+.final-state h3 {
+  font-family: var(--serif-display);
+  font-size: 36px;
+  font-weight: 400;
+  margin-bottom: 40px;
+  color: var(--paper);
+}
+
+.final-state h3 em {
+  font-style: italic;
+  color: var(--accent-soft);
+}
+
+.final-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 40px;
+  counter-reset: final;
+}
+
+.final-list li {
+  font-family: var(--serif-body);
+  font-size: 15px;
+  line-height: 1.6;
+  padding: 16px 0 16px 40px;
+  position: relative;
+  border-bottom: 1px solid rgba(245, 241, 232, 0.15);
+  color: var(--paper);
+}
+
+.final-list li::before {
+  counter-increment: final;
+  content: counter(final, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 16px;
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--accent-soft);
+  font-weight: 500;
+}
+
+/* ==================== JOB TARGETS ==================== */
+.targets-section {
+  margin-bottom: 60px;
+}
+
+.targets-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.target-pill {
+  padding: 20px 24px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  font-family: var(--serif-display);
+  font-size: 16px;
+  color: var(--ink);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  cursor: default;
+}
+
+.target-pill:hover {
+  background: var(--paper-warm);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.target-pill .num {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.warning-block {
+  margin-top: 32px;
+  padding: 24px 28px;
+  background: rgba(181, 72, 34, 0.06);
+  border-left: 3px solid var(--accent);
+}
+
+.warning-block .label {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.warning-block p {
+  font-family: var(--serif-body);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ==================== AVOID-LIST ==================== */
+.avoid-block {
+  margin-top: 40px;
+  padding: 32px;
+  border: 1px dashed var(--ink-mute);
+  background: rgba(245, 241, 232, 0.5);
+}
+
+.avoid-block h4 {
+  font-family: var(--serif-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 16px;
+  font-style: italic;
+}
+
+.avoid-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.avoid-list li {
+  font-family: var(--serif-body);
+  font-size: 14px;
+  color: var(--ink-mute);
+  padding: 6px 14px;
+  border: 1px solid var(--rule);
+  text-decoration: line-through;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1.5px;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+  border-top: 1px solid var(--rule);
+  background: var(--paper-warm);
+  padding: 60px 48px 40px;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 40px;
+}
+
+.footer-brand {
+  font-family: var(--serif-display);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.footer-tagline {
+  font-family: var(--serif-body);
+  font-size: 14px;
+  color: var(--ink-mute);
+  line-height: 1.6;
+  max-width: 360px;
+}
+
+.footer-col h5 {
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+
+.footer-col p {
+  font-family: var(--serif-body);
+  font-size: 14px;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.footer-bottom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-mute);
+}
+
+/* ==================== RESPONSIVE ==================== */
+@media (max-width: 900px) {
+  .masthead-inner {
+    grid-template-columns: 1fr auto;
+    padding: 14px 24px;
+    gap: 16px;
+  }
+  .brand-meta { display: none; }
+  .brand-center { font-size: 12px; }
+
+  .hero { padding: 48px 24px 40px; }
+  .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+  .hero-aside { padding-left: 24px; border-left: 2px solid var(--accent); }
+  .hero-volume { display: none; }
+  .hero-meta { gap: 28px; flex-wrap: wrap; }
+
+  .tabs-inner { padding: 0 24px; }
+  .tab-btn { padding: 16px 16px; font-size: 14px; }
+  .tab-btn.active::after { left: 16px; right: 16px; }
+
+  .panel { padding: 48px 24px 80px; }
+
+  .section-header { grid-template-columns: 1fr; gap: 16px; }
+  .section-num { font-size: 48px; }
+
+  .overview-grid { grid-template-columns: 1fr; }
+  .three-col { grid-template-columns: 1fr; gap: 32px; padding-bottom: 48px; margin-bottom: 48px; }
+  .col-header { position: static; }
+  .ability-list { grid-template-columns: 1fr; }
+
+  .month-header { grid-template-columns: 1fr; gap: 12px; }
+  .month-num { font-size: 56px; }
+  .month-weeks { text-align: left; }
+
+  .weeks-grid { grid-template-columns: 1fr; }
+
+  .project-head { grid-template-columns: 1fr; gap: 16px; }
+  .project-body { grid-template-columns: 1fr; gap: 32px; }
+
+  .split-panel { grid-template-columns: 1fr; gap: 48px; }
+  .commitment { padding: 40px 24px; margin: 48px 0; }
+  .final-state { padding: 40px 24px; }
+  .final-list { grid-template-columns: 1fr; }
+
+  .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 8px; }
+}
+
+/* Animation reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ============ MASTHEAD ============ -->
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="brand-mark">Davidian<span class="dot"></span>Tutorial</div>
+    <div class="brand-center">A One-on-One Tutoring Studio · 一對一家教工作室</div>
+    <div class="brand-meta">Vol. 01 · 2026</div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-volume">No. 01 — Course Prospectus</div>
+  <div class="hero-grid">
+    <div>
+      <div class="hero-eyebrow">六個月轉職實作課程 · Course Prospectus</div>
+      <h1 class="hero-title">AI 協作式<br/>數位產品<em>實作</em><br/>與轉職作品集</h1>
+      <p class="hero-sub">為零基礎學習者設計的一對一家教課程。在最長六個月內，建立足以申請初階資訊相關職務的背景、作品集、GitHub 專案紀錄與面試表達能力。</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="label">Duration</div>
+          <div class="value"><em>24</em> 週</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="label">Per Week</div>
+          <div class="value"><em>2.5</em> hr</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="label">Format</div>
+          <div class="value">1 : 1</div>
+        </div>
+      </div>
+    </div>
+    <aside class="hero-aside">
+      <div class="aside-label">Instructor's Note</div>
+      <p class="aside-quote">這不是一門教你背程式語法的課，而是一門幫你在六個月內，做出真實感作品集、建立 GitHub、理解資訊產品與專案工作流程，並具備初階資訊相關職務求職與面試能力的實作轉職課。</p>
+      <div class="aside-attribution"><strong>Davidian</strong> · Course Instructor</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ TABS ============ -->
+<nav class="tabs-bar">
+  <div class="tabs-inner">
+    <button class="tab-btn active" data-tab="overview"><span class="num">I</span>課程總覽</button>
+    <button class="tab-btn" data-tab="curriculum"><span class="num">II</span>24 週課程</button>
+    <button class="tab-btn" data-tab="projects"><span class="num">III</span>作品集策略</button>
+    <button class="tab-btn" data-tab="career"><span class="num">IV</span>求職方向</button>
+    <button class="tab-btn" data-tab="weekly"><span class="num">V</span>每週交付</button>
+    <button class="tab-btn" data-tab="evaluation"><span class="num">VI</span>評量方式</button>
+    <button class="tab-btn" data-tab="commitment"><span class="num">VII</span>承諾與成果</button>
+  </div>
+</nav>
+
+<!-- ============ PANEL: OVERVIEW ============ -->
+<section class="panel active" id="overview">
+  <div class="section-header">
+    <div class="section-num">I</div>
+    <div class="section-title-block">
+      <div class="eyebrow">Course Overview · 課程總覽</div>
+      <h2>建立可<em>真實求職</em>的能力，<br/>而非學生型練習作品</h2>
+    </div>
+  </div>
+
+  <div class="overview-grid">
+    <div class="stat-card">
+      <div class="label">Total Length</div>
+      <div class="value"><em>24</em></div>
+      <div class="unit">週課程／約 6 個月</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Main Projects</div>
+      <div class="value"><em>2</em>+1</div>
+      <div class="unit">主作品 + 作品集網站</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Weekly Hours</div>
+      <div class="value">6.5–<em>8.5</em></div>
+      <div class="unit">含正課與課後實作</div>
+    </div>
+  </div>
+
+  <div class="three-col">
+    <div class="col-header">課程定位<br/>POSITIONING</div>
+    <div class="col-body">
+      <p>本課程為一對一家教式實作課程，目標不是培養傳統程式工程師，而是協助零基礎學習者在最長六個月內，建立足以申請初階資訊相關職務的背景、作品集、GitHub 專案紀錄與面試表達能力。</p>
+      <p>本課程聚焦於：建立資訊產品與數位專案工作的基本理解，培養需求分析、題目判斷、專案拆解與執行能力，並學會使用 AI 工具協作完成數位產品原型與 MVP。</p>
+    </div>
+  </div>
+
+  <div class="three-col">
+    <div class="col-header">適合對象<br/>FOR WHOM</div>
+    <div class="col-body">
+      <ul class="ability-list">
+        <li>無資訊、程式或軟體開發背景者</li>
+        <li>非本科轉職者</li>
+        <li>過去主要工作經驗不在科技業者</li>
+        <li>對網站、Web App、數位產品與專案工作有興趣者</li>
+        <li>希望在六個月內累積可求職的作品與背景者</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="three-col">
+    <div class="col-header">核心能力<br/>CORE SKILLS</div>
+    <div class="col-body">
+      <ul class="ability-list">
+        <li>建立資訊產品與數位專案工作的基本理解</li>
+        <li>培養需求分析、題目判斷、專案拆解與執行能力</li>
+        <li>學會使用 AI 工具協作完成數位產品原型與 MVP</li>
+        <li>建立 Trello 看板管理、版本迭代與測試觀念</li>
+        <li>累積具真實場景價值的作品集</li>
+        <li>完成履歷、作品集網站、GitHub 與面試準備</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="three-col" style="border-bottom:none; padding-bottom:0; margin-bottom:0;">
+    <div class="col-header">核心工具<br/>TOOLKIT</div>
+    <div class="col-body">
+      <p style="margin-bottom:32px;">本課程以學生可上手、可實作、可求職為原則，不以艱深程式理論為主，而是優先培養 AI 協作式數位產品開發與專案執行能力。</p>
+      <div class="tools-grid">
+        <div class="tool-cell">
+          <div class="name">ChatGPT <span class="role">Discovery</span></div>
+          <div class="desc">需求釐清、題目發想、規格整理、文案優化、學習輔助</div>
+        </div>
+        <div class="tool-cell">
+          <div class="name">Claude <span class="role">Build</span></div>
+          <div class="desc">頁面生成、網站與 Web App 內容協作、文件整理</div>
+        </div>
+        <div class="tool-cell">
+          <div class="name">Gemini <span class="role">Prototype</span></div>
+          <div class="desc">原型設計、功能延伸、產品構想與協作</div>
+        </div>
+        <div class="tool-cell">
+          <div class="name">Trello <span class="role">Manage</span></div>
+          <div class="desc">任務視覺化管理與專案進度追蹤</div>
+        </div>
+        <div class="tool-cell">
+          <div class="name">Canva / Gamma <span class="role">Present</span></div>
+          <div class="desc">商用簡報、作品包裝與成果發表</div>
+        </div>
+        <div class="tool-cell">
+          <div class="name">NotebookLM <span class="role">Research</span></div>
+          <div class="desc">資料整理、知識整合與內容理解</div>
+        </div>
+        <div class="tool-cell">
+          <div class="name">GitHub <span class="role">Ship</span></div>
+          <div class="desc">專案版本管理與作品呈現</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PANEL: CURRICULUM ============ -->
+<section class="panel" id="curriculum">
+  <div class="section-header">
+    <div class="section-num">II</div>
+    <div class="section-title-block">
+      <div class="eyebrow">24-Week Curriculum · 完整課程規劃</div>
+      <h2>六個月，<em>六個階段</em>，<br/>從世界觀到正式投遞</h2>
+    </div>
+  </div>
+
+  <p style="font-family:var(--serif-body); font-size:16px; color:var(--ink-mute); max-width:720px; margin-bottom:60px; line-height:1.7;">點擊任一週次卡片以展開完整內容規劃、回家作業與預期產出。</p>
+
+  <!-- MONTH 1 -->
+  <div class="month-section">
+    <div class="month-header">
+      <div class="month-num">01</div>
+      <div class="month-title-group">
+        <div class="month-label">Month One</div>
+        <h3>建立資訊世界觀與專案眼光</h3>
+      </div>
+      <div class="month-weeks">Week 1–4</div>
+    </div>
+    <div class="weeks-grid">
+
+      <div class="week-card" data-week="1">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head">
+          <div class="week-num">Week 01</div>
+          <div class="week-hours">2.5 hr</div>
+        </div>
+        <h4>資訊產業職務地圖與轉職定位</h4>
+        <div class="week-theme">我到底要往哪種資訊職務走</div>
+        <div class="week-detail">
+          <div class="detail-section">
+            <div class="detail-label">學習目標</div>
+            <ul>
+              <li>了解資訊產業常見職務與工作差異</li>
+              <li>明確設定六個月內的轉職方向</li>
+              <li>建立課程整體藍圖與學習規則</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">內容規劃</div>
+            <ul>
+              <li>資訊產業常見職務介紹</li>
+              <li>工程、產品、專案、QA、營運角色差異</li>
+              <li>學生既有背景優勢與缺口盤點</li>
+              <li>六個月學習與作品集藍圖說明</li>
+              <li>建立 GitHub、Trello 帳號與使用規則</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">回家作業</div>
+            <ul>
+              <li>寫一份「我的轉職目標與原因」300–500 字</li>
+              <li>建立 GitHub、Trello 帳號</li>
+              <li>蒐集 10 個想投遞的初階職缺並整理共同要求</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">預期產出</div>
+            <ul>
+              <li>個人轉職方向初稿</li>
+              <li>初步職缺分析表</li>
+              <li>GitHub / Trello 帳號建立完成</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="2">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head">
+          <div class="week-num">Week 02</div>
+          <div class="week-hours">2.5 hr</div>
+        </div>
+        <h4>數位產品基本認知</h4>
+        <div class="week-theme">網站、Web App、App、前端、後端、資料庫、API 到底是什麼</div>
+        <div class="week-detail">
+          <div class="detail-section">
+            <div class="detail-label">學習目標</div>
+            <ul>
+              <li>建立網站、Web App、App、前端、後端、資料庫、API 的基本理解</li>
+              <li>理解一個數位產品由哪些部分組成</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">內容規劃</div>
+            <ul>
+              <li>用白話方式理解產品架構</li>
+              <li>頁面、功能、資料與流程的關係</li>
+              <li>使用者旅程概念</li>
+              <li>MVP 基本概念</li>
+              <li>為什麼零基礎學習者不適合一開始做太大專案</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">回家作業</div>
+            <ul>
+              <li>選 2 個自己常用 App，拆解其功能與主要流程</li>
+              <li>畫出一個熟悉服務的 user flow</li>
+              <li>用 ChatGPT 協助寫出 5 個使用者故事</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">預期產出</div>
+            <ul>
+              <li>產品拆解紀錄</li>
+              <li>初版使用者流程圖</li>
+              <li>使用者故事草稿</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="3">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head">
+          <div class="week-num">Week 03</div>
+          <div class="week-hours">2.5 hr</div>
+        </div>
+        <h4>什麼是好專案題目</h4>
+        <div class="week-theme">如何找到有真實價值、不是學生作業感的題目</div>
+        <div class="week-detail">
+          <div class="detail-section">
+            <div class="detail-label">學習目標</div>
+            <ul>
+              <li>學會判斷什麼題目值得做</li>
+              <li>避免學生味與履歷價值低的題目</li>
+              <li>找出與自身背景有關的作品方向</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">內容規劃</div>
+            <ul>
+              <li>好題目的五個判準：真實使用者、明確痛點、4–8 週做出 MVP、可展示技能、面試可講商業價值</li>
+              <li>常見學生型專案問題分析</li>
+              <li>從保險業、理財需求、顧客追蹤場景找題目</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">回家作業</div>
+            <ul>
+              <li>提出 5 個候選題目</li>
+              <li>每一題整理：使用者、痛點、功能、價值、MVP 範圍</li>
+              <li>選出 2 題作為主作品候選</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">預期產出</div>
+            <ul>
+              <li>題目評估表</li>
+              <li>2 個候選主作品題目</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="4">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head">
+          <div class="week-num">Week 04</div>
+          <div class="week-hours">2.5 hr</div>
+        </div>
+        <h4>專案管理與 Trello 看板基礎</h4>
+        <div class="week-theme">用 Trello 管理一個真實產品專案</div>
+        <div class="week-detail">
+          <div class="detail-section">
+            <div class="detail-label">學習目標</div>
+            <ul>
+              <li>建立基本專案管理觀念</li>
+              <li>會用 Trello 管理自己的實作進度</li>
+              <li>學會拆解 task 與優先順序</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">內容規劃</div>
+            <ul>
+              <li>Backlog / Doing / Testing / Done</li>
+              <li>任務拆解方法</li>
+              <li>Priority / owner / due date 概念</li>
+              <li>里程碑與每週 sprint 觀念</li>
+              <li>版本迭代基本方法</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">回家作業</div>
+            <ul>
+              <li>為主作品 A 建立 Trello board</li>
+              <li>至少拆出 20 個 task</li>
+              <li>標示 MVP 必做功能與未來延伸功能</li>
+            </ul>
+          </div>
+          <div class="detail-section">
+            <div class="detail-label">預期產出</div>
+            <ul>
+              <li>主作品 A 專案看板</li>
+              <li>初版任務拆解表</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MONTH 2 -->
+  <div class="month-section">
+    <div class="month-header">
+      <div class="month-num">02</div>
+      <div class="month-title-group">
+        <div class="month-label">Month Two</div>
+        <h3>AI 協作開發與原型設計</h3>
+      </div>
+      <div class="month-weeks">Week 5–8</div>
+    </div>
+    <div class="weeks-grid">
+
+      <div class="week-card" data-week="5">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 05</div><div class="week-hours">2.5 hr</div></div>
+        <h4>AI 工具分工與 Prompting 基礎</h4>
+        <div class="week-theme">ChatGPT / Claude / Gemini 如何分工合作</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>了解不同 AI 工具在專案中的角色</li><li>學會撰寫可執行、可驗證的 prompt</li><li>建立 AI 協作的基本工作流</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>用 ChatGPT 做需求討論與拆解</li><li>用 Claude 做頁面與文件整理</li><li>用 Gemini 做原型與產品構想延伸</li><li>Prompt 結構：角色、目標、背景、限制、輸出格式</li><li>AI 產出內容如何驗證與修正</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>針對主作品 A 撰寫 5 組高品質 prompt</li><li>請 AI 產出：功能清單、用戶角色、頁面列表、FAQ、測試案例草稿</li><li>比較三種工具產出差異</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>Prompt 範本集</li><li>AI 協作紀錄</li><li>主作品 A 規劃資料初稿</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="6">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 06</div><div class="week-hours">2.5 hr</div></div>
+        <h4>需求訪談與使用者故事</h4>
+        <div class="week-theme">把模糊想法變成可做的功能</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>學會把模糊想法轉成可執行需求</li><li>建立 persona、user story、acceptance criteria 概念</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>Persona 設計</li><li>痛點與情境分析</li><li>User story 與 acceptance criteria</li><li>功能與需求的差別</li><li>需求排序與篩選</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成主作品 A 的 2 個 persona</li><li>完成 10 條 user stories</li><li>為每條 story 補上完成判準</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>Persona 文件</li><li>User stories 文件</li><li>功能優先順序表</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="7">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 07</div><div class="week-hours">2.5 hr</div></div>
+        <h4>資訊架構與畫面流程</h4>
+        <div class="week-theme">從功能清單到頁面架構</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>學會從功能清單轉成頁面架構與操作流程</li><li>能畫出 sitemap 與主要使用者流程</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>Sitemap 基礎</li><li>User flow 繪製</li><li>表單流程拆解</li><li>CRUD 概念</li><li>常見例外流程設計</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>畫出主作品 A 的 sitemap</li><li>畫 3 條主要 user flow</li><li>列出每頁的目的、資訊與主要操作</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>Sitemap</li><li>User flows</li><li>頁面規格草稿</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="8">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 08</div><div class="week-hours">2.5 hr</div></div>
+        <h4>Wireframe 與低保真原型</h4>
+        <div class="week-theme">先把畫面與流程想清楚，再做 UI</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>在進入 UI 與實作前，先想清楚畫面與流程</li><li>能完成主要頁面的低保真規劃</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>首頁 / 列表頁 / 詳情頁 / 編輯頁 / 儀表板規劃</li><li>表單欄位設計</li><li>錯誤提示與空狀態</li><li>手機版基本觀念</li><li>原型與規格文件整理方法</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成主作品 A 的 5–7 頁 wireframe</li><li>為每頁寫出頁面目的與主要操作</li><li>整理第一版產品規格文件</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>Wireframe 套件</li><li>主作品 A 規格文件 v1</li></ul></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MONTH 3 -->
+  <div class="month-section">
+    <div class="month-header">
+      <div class="month-num">03</div>
+      <div class="month-title-group">
+        <div class="month-label">Month Three</div>
+        <h3>主作品 A 實作</h3>
+      </div>
+      <div class="month-weeks">Week 9–12</div>
+    </div>
+    <div class="weeks-grid">
+
+      <div class="week-card" data-week="9">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 09</div><div class="week-hours">2.5 hr</div></div>
+        <h4>前端與頁面組成基礎</h4>
+        <div class="week-theme">用 AI 協作生成前端頁面，但要看得懂、改得動</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>建立 HTML / CSS / RWD 的基本概念</li><li>能看懂 AI 協作產生的頁面並進行微調</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>HTML 區塊與頁面結構</li><li>CSS 基本樣式觀念</li><li>表單、按鈕、列表等常見元件</li><li>基本 RWD 概念</li><li>如何調整 AI 產生的前端頁面</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成主作品 A 的首頁與主控台頁面</li><li>建立專案資料夾與命名規則</li><li>截圖存檔，保留版本紀錄</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>首頁與主控台頁面初版</li><li>專案結構初步整理</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="10">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 10</div><div class="week-hours">2.5 hr</div></div>
+        <h4>列表頁、表單頁、詳情頁</h4>
+        <div class="week-theme">把核心使用流程做出來</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>建立主作品 A 核心流程頁面</li><li>學會列表、表單、詳情頁的基本設計與串接概念</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>客戶列表頁</li><li>新增資料表單</li><li>客戶詳情頁</li><li>編輯與刪除流程</li><li>UI 一致性與資訊整理</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成 3 個核心頁面</li><li>整理假資料與測試資料</li><li>撰寫 README 初稿</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>列表頁、表單頁、詳情頁</li><li>專案 README 初稿</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="11">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 11</div><div class="week-hours">2.5 hr</div></div>
+        <h4>互動邏輯與資料設計概念</h4>
+        <div class="week-theme">資料與畫面如何對上</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>理解畫面與資料之間的關係</li><li>建立欄位、狀態與資料流概念</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>資料欄位設計</li><li>狀態與分類邏輯</li><li>假資料 / JSON 概念</li><li>前後端串接的白話理解</li><li>搜尋、篩選等基本邏輯</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成資料欄位表</li><li>做出至少一個搜尋或篩選功能</li><li>更新產品規格文件 v2</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>欄位表</li><li>搜尋或篩選功能</li><li>規格文件更新版</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="12">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 12</div><div class="week-hours">2.5 hr</div></div>
+        <h4>主作品 A MVP 驗收</h4>
+        <div class="week-theme">第一個版本完成，不求完美，先可 demo</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>完成主作品 A 第一版 MVP</li><li>建立 demo、驗收與版本紀錄觀念</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>Demo 流程設計</li><li>問題盤點</li><li>Bug list 建立</li><li>下一版優先順序</li><li>GitHub repository 整理方法</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>將主作品 A 上傳 GitHub</li><li>補 README：專案背景、功能、畫面、使用者、未來規劃</li><li>錄製 3 分鐘 demo 說明</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>GitHub 主作品 A repository</li><li>MVP demo</li><li>初版專案文件</li></ul></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MONTH 4 -->
+  <div class="month-section">
+    <div class="month-header">
+      <div class="month-num">04</div>
+      <div class="month-title-group">
+        <div class="month-label">Month Four</div>
+        <h3>測試、品質、作品包裝 + 主作品 B 規劃</h3>
+      </div>
+      <div class="month-weeks">Week 13–16</div>
+    </div>
+    <div class="weeks-grid">
+
+      <div class="week-card" data-week="13">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 13</div><div class="week-hours">2.5 hr</div></div>
+        <h4>測試入門與 Bug 回報</h4>
+        <div class="week-theme">軟體不是做完就好，要會測</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>建立測試觀念與基本 QA 素養</li><li>學會用職場可理解方式紀錄 bug 與 issue</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>測試案例是什麼</li><li>正常流程測試</li><li>異常流程測試</li><li>UI / UX 問題辨識</li><li>Bug report 寫法</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>為主作品 A 撰寫 15 條 test cases</li><li>記錄至少 10 個 bug / issue</li><li>回寫 Trello 與版本紀錄</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>測試案例表</li><li>Bug list</li><li>Trello 問題追蹤紀錄</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="14">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 14</div><div class="week-hours">2.5 hr</div></div>
+        <h4>作品優化與版本迭代</h4>
+        <div class="week-theme">讓作品從可用走向較專業</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>讓作品從可用走向更完整與專業</li><li>建立版本更新與細節優化觀念</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>空狀態、錯誤訊息、欄位提示</li><li>文案一致性</li><li>視覺與版面優化</li><li>Demo 流程優化</li><li>版本更新紀錄寫法</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成主作品 A v1.1</li><li>補版本更新紀錄</li><li>更新專案簡介與畫面截圖</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>主作品 A v1.1</li><li>更新版畫面與文件</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="15">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 15</div><div class="week-hours">2.5 hr</div></div>
+        <h4>主作品 B 題目定案</h4>
+        <div class="week-theme">第二個作品要補足不同能力面向</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>規劃第二個作品，補足不同能力面向</li><li>讓兩個作品彼此互補，提高求職說服力</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>主作品 B 的定位與目的</li><li>與主作品 A 的差異化設計</li><li>商業邏輯、分析流程與資訊呈現</li><li>面試時兩個作品如何互相支撐</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成主作品 B 題目規劃書</li><li>完成 2 個 persona</li><li>完成 8 個 user stories</li><li>列出 MVP 功能清單</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>主作品 B 規劃書</li><li>Persona 與 user stories 文件</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="16">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 16</div><div class="week-hours">2.5 hr</div></div>
+        <h4>主作品 B 原型與規格</h4>
+        <div class="week-theme">快速完成第二個作品的設計稿</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>快速完成第二個作品的 IA、流程與 wireframe</li><li>建立規格文件整理能力</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>IA / user flow</li><li>表單輸入流程</li><li>結果頁設計</li><li>建議邏輯與資訊呈現</li><li>規格文件整理方法</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成主作品 B wireframe</li><li>建立 Trello board</li><li>撰寫規格文件 v1</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>主作品 B wireframe</li><li>規格文件 v1</li><li>Trello 看板</li></ul></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MONTH 5 -->
+  <div class="month-section">
+    <div class="month-header">
+      <div class="month-num">05</div>
+      <div class="month-title-group">
+        <div class="month-label">Month Five</div>
+        <h3>主作品 B 實作 + 個人品牌建立</h3>
+      </div>
+      <div class="month-weeks">Week 17–20</div>
+    </div>
+    <div class="weeks-grid">
+
+      <div class="week-card" data-week="17">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 17</div><div class="week-hours">2.5 hr</div></div>
+        <h4>主作品 B 前端頁面實作</h4>
+        <div class="week-theme">把輸入流程做出來</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>完成第二個作品的主流程頁面</li><li>強化表單與使用者引導設計能力</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>首頁</li><li>表單流程頁</li><li>結果頁</li><li>操作引導</li><li>視覺一致性</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成主作品 B 主流程頁面</li><li>補假資料與建議內容</li><li>截圖整理作品過程</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>主作品 B 主流程頁面初版</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="18">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 18</div><div class="week-hours">2.5 hr</div></div>
+        <h4>主作品 B 邏輯與內容優化</h4>
+        <div class="week-theme">讓它看起來更像真的工具</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>讓第二個作品更接近真實可用工具</li><li>補強結果頁、說明邏輯與可讀性</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>判斷邏輯</li><li>結果分類與說明</li><li>FAQ 與導引文案</li><li>例外狀況處理</li><li>文件與 README 整理</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成主作品 B MVP</li><li>補 README</li><li>錄製 demo 影片</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>主作品 B MVP</li><li>GitHub repository</li><li>Demo 影片</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="19">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 19</div><div class="week-hours">2.5 hr</div></div>
+        <h4>個人作品集網站規劃</h4>
+        <div class="week-theme">把自己包裝成可被錄用的人</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>建立面向求職的個人品牌與作品呈現方式</li><li>規劃作品集網站架構與內容</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>個人定位</li><li>作品集網站內容架構</li><li>首頁、自介、作品、技能、聯絡頁規劃</li><li>文案寫法</li><li>視覺風格方向</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>撰寫個人介紹初稿</li><li>完成作品集網站 sitemap 與 wireframe</li><li>蒐集視覺參考</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>作品集網站規劃書</li><li>個人介紹初稿</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="20">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 20</div><div class="week-hours">2.5 hr</div></div>
+        <h4>作品集網站實作</h4>
+        <div class="week-theme">把三個作品整合到一個對外門面</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>建立對外可展示的個人門面</li><li>整合個人背景與作品內容</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>首頁 hero section</li><li>關於我</li><li>作品頁</li><li>聯絡方式</li><li>GitHub 與 demo 連結整合</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成個人網站初版</li><li>補上兩個作品頁</li><li>上傳至 GitHub 並整理展示方式</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>個人作品集網站初版</li></ul></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MONTH 6 -->
+  <div class="month-section">
+    <div class="month-header">
+      <div class="month-num">06</div>
+      <div class="month-title-group">
+        <div class="month-label">Month Six</div>
+        <h3>履歷、面試、投遞</h3>
+      </div>
+      <div class="month-weeks">Week 21–24</div>
+    </div>
+    <div class="weeks-grid">
+
+      <div class="week-card" data-week="21">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 21</div><div class="week-hours">2.5 hr</div></div>
+        <h4>履歷與職缺對焦</h4>
+        <div class="week-theme">把過去背景轉成資訊職缺看得懂的語言</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>將過去背景轉譯為資訊職缺可理解的語言</li><li>建立履歷與職缺對應能力</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>履歷架構</li><li>保險業背景如何轉譯</li><li>技能描述寫法</li><li>專案經驗寫法</li><li>職缺客製化投遞方法</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成一版履歷</li><li>選 10 個目標職缺</li><li>每個職缺標示可對應的作品與優勢</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>履歷初稿</li><li>目標職缺對應表</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="22">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 22</div><div class="week-hours">2.5 hr</div></div>
+        <h4>專案講法與面試說法</h4>
+        <div class="week-theme">會做，也要會說</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>練習口語化表達自己的作品與轉職動機</li><li>建立可用於面試的說法框架</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>1 分鐘自我介紹</li><li>3 分鐘專案說明</li><li>STAR 講法</li><li>常見面試題</li><li>為什麼想轉職資訊業</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>撰寫自我介紹稿</li><li>撰寫兩個作品的口頭講稿</li><li>錄音或錄影練習</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>自我介紹稿</li><li>作品口頭講稿</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="23">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 23</div><div class="week-hours">2.5 hr</div></div>
+        <h4>模擬面試與補強</h4>
+        <div class="week-theme">針對弱點修正</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>發現求職材料與表達上的弱點</li><li>進行履歷、GitHub、作品集與講法的修正</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>模擬面試</li><li>履歷修正</li><li>GitHub 修正</li><li>README 修正</li><li>作品集網站修正</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>完成最終版履歷與作品集</li><li>補齊所有 repository 文件</li><li>準備投遞清單</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>履歷最終版</li><li>作品集最終版</li><li>GitHub 專案文件完整化</li></ul></div>
+        </div>
+      </div>
+
+      <div class="week-card" data-week="24">
+        <div class="expand-hint">Read more <span class="icon"></span></div>
+        <div class="week-card-head"><div class="week-num">Week 24</div><div class="week-hours">2.5 hr</div></div>
+        <h4>求職啟動週</h4>
+        <div class="week-theme">正式開始投遞</div>
+        <div class="week-detail">
+          <div class="detail-section"><div class="detail-label">學習目標</div><ul><li>正式開始投遞工作</li><li>建立投遞、追蹤與後續補強節奏</li></ul></div>
+          <div class="detail-section"><div class="detail-label">內容規劃</div><ul><li>最終總檢查</li><li>投遞策略</li><li>職缺分類與優先順序</li><li>入職前 30 天補強方向</li><li>後續自學建議</li></ul></div>
+          <div class="detail-section"><div class="detail-label">回家作業</div><ul><li>正式投遞至少 10–20 個職缺</li><li>建立投遞紀錄表</li><li>準備第二輪面試應對資料</li></ul></div>
+          <div class="detail-section"><div class="detail-label">預期產出</div><ul><li>正式投遞紀錄</li><li>求職啟動計畫</li></ul></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<!-- ============ PANEL: PROJECTS ============ -->
+<section class="panel" id="projects">
+  <div class="section-header">
+    <div class="section-num">III</div>
+    <div class="section-title-block">
+      <div class="eyebrow">Portfolio Strategy · 作品集策略</div>
+      <h2>避免一眼看出是<em>學生練習題</em>的專案</h2>
+    </div>
+  </div>
+
+  <p style="font-family:var(--serif-body); font-size:17px; line-height:1.8; color:var(--ink-soft); max-width:780px; margin-bottom:60px;">本課程最重要的設計原則之一，是讓作品具有真實場景價值。三件作品互相支撐，既展示產品思維，也展示執行能力與個人品牌。</p>
+
+  <div class="project-block">
+    <div class="project-head">
+      <div class="project-tag">主作品 A</div>
+      <h3 class="project-title">保險客戶管理與追蹤 Web App</h3>
+      <div class="project-status">CRM · Web App · MVP</div>
+    </div>
+    <div class="project-body">
+      <div class="project-desc">
+        <p>以學生過去保險業務背景為基礎，設計一個可管理客戶資料、需求紀錄、追蹤狀態、預約提醒與業務備忘錄的 Web App。</p>
+        <p>此作品的核心價值，在於展現學生能將過往專業領域轉化為資訊產品需求的能力，這正是面試時最具說服力的故事。</p>
+      </div>
+      <div class="project-skills">
+        <div class="label">可展示能力 · Demonstrates</div>
+        <ul>
+          <li>真實場景需求分析</li>
+          <li>使用者故事設計</li>
+          <li>頁面規劃與資訊架構</li>
+          <li>表單設計</li>
+          <li>專案管理與版本迭代</li>
+          <li>測試與問題回報</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-block">
+    <div class="project-head">
+      <div class="project-tag">主作品 B</div>
+      <h3 class="project-title">個人化保險 / 理財需求分析工具</h3>
+      <div class="project-status">Interactive Tool · MVP</div>
+    </div>
+    <div class="project-body">
+      <div class="project-desc">
+        <p>設計一個輸入個人基本資訊後，能提供保障需求初步分析、風險分級與建議內容的互動工具。</p>
+        <p>與主作品 A 不同，這個專案的重點不在資料管理，而在商業邏輯與顧客場景理解，讓兩件作品互補、形成完整的能力光譜。</p>
+      </div>
+      <div class="project-skills">
+        <div class="label">可展示能力 · Demonstrates</div>
+        <ul>
+          <li>商業邏輯與顧客場景理解</li>
+          <li>表單與輸入流程設計</li>
+          <li>結果頁資訊呈現</li>
+          <li>內容架構設計</li>
+          <li>使用者旅程與產品價值思考</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-block">
+    <div class="project-head">
+      <div class="project-tag">支援作品 C</div>
+      <h3 class="project-title">個人作品集網站</h3>
+      <div class="project-status">Personal Site · Live</div>
+    </div>
+    <div class="project-body">
+      <div class="project-desc">
+        <p>建立一個整合個人背景、求職定位、技能工具、專案作品與聯絡方式的個人網站。</p>
+        <p>這是面試官第一眼會看到的東西，也是你個人品牌的對外門面。它要說的故事是：「這個人懂得如何介紹自己。」</p>
+      </div>
+      <div class="project-skills">
+        <div class="label">可展示能力 · Demonstrates</div>
+        <ul>
+          <li>個人品牌包裝</li>
+          <li>前端頁面設計</li>
+          <li>資訊架構</li>
+          <li>視覺與版面配置</li>
+          <li>求職導向內容呈現</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="avoid-block">
+    <h4>應避免的常見學生型題目 · Avoid these</h4>
+    <ul class="avoid-list">
+      <li>Todo List</li>
+      <li>學生選課系統</li>
+      <li>一般記事本</li>
+      <li>模仿教學網站的制式練習作品</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ PANEL: CAREER ============ -->
+<section class="panel" id="career">
+  <div class="section-header">
+    <div class="section-num">IV</div>
+    <div class="section-title-block">
+      <div class="eyebrow">Job Targets · 建議求職方向</div>
+      <h2>適合投遞的<em>初階資訊</em>相關職位</h2>
+    </div>
+  </div>
+
+  <div class="targets-section">
+    <p style="font-family:var(--serif-body); font-size:17px; line-height:1.8; color:var(--ink-soft); max-width:780px; margin-bottom:40px;">本課程完成後，學生可優先投遞以下職位。這些職務共同特性是：重視產品思維、執行能力與 AI 工具運用，而非深度演算法或系統設計能力。</p>
+    <div class="targets-grid">
+      <div class="target-pill"><span class="num">01</span>專案助理</div>
+      <div class="target-pill"><span class="num">02</span>PM Assistant<br/>Product Assistant</div>
+      <div class="target-pill"><span class="num">03</span>數位營運助理<br/>產品營運助理</div>
+      <div class="target-pill"><span class="num">04</span>Junior QA<br/>測試助理</div>
+      <div class="target-pill"><span class="num">05</span>網站營運<br/>數位內容維運</div>
+      <div class="target-pill"><span class="num">06</span>AI 工具導入助理<br/>數位轉型助理</div>
+      <div class="target-pill"><span class="num">07</span>偏 AI 協作型的初階<br/>網站或產品執行職位</div>
+    </div>
+
+    <div class="warning-block">
+      <div class="label">Important · 重要說明</div>
+      <p>不建議本課程完成後直接主投傳統後端工程師、DevOps、資安工程師或要求深度演算法測驗之軟體工程職。這些職務需要更深入的 CS 基礎，可作為入職後的中長期目標。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PANEL: WEEKLY ============ -->
+<section class="panel" id="weekly">
+  <div class="section-header">
+    <div class="section-num">V</div>
+    <div class="section-title-block">
+      <div class="eyebrow">Weekly Deliverables · 每週固定交付</div>
+      <h2>每週都要有<em>累積</em>，<br/>而不是只有上課</h2>
+    </div>
+  </div>
+
+  <p style="font-family:var(--serif-body); font-size:17px; line-height:1.8; color:var(--ink-soft); max-width:780px; margin-bottom:60px;">為確保學生每週持續累積可求職成果，建議每週皆要求以下固定交付。這些交付不只是作業，更是六個月後完整作品集的組成磚塊。</p>
+
+  <div class="split-panel">
+    <div>
+      <div class="deliverable-block">
+        <h4><span class="num">01</span>學習紀錄</h4>
+        <ul>
+          <li>本週學到什麼</li>
+          <li>哪裡卡住</li>
+          <li>下週要解決什麼</li>
+        </ul>
+      </div>
+      <div class="deliverable-block">
+        <h4><span class="num">02</span>作品進度更新</h4>
+        <ul>
+          <li>本週完成哪些頁面或功能</li>
+          <li>哪些內容由 AI 協助產出</li>
+          <li>哪些地方由自己調整與修正</li>
+        </ul>
+      </div>
+    </div>
+    <div>
+      <div class="deliverable-block">
+        <h4><span class="num">03</span>Trello 更新</h4>
+        <ul>
+          <li>本週完成事項</li>
+          <li>下週待辦事項</li>
+          <li>卡住的 issue</li>
+        </ul>
+      </div>
+      <div class="deliverable-block">
+        <h4><span class="num">04</span>GitHub / 文件更新</h4>
+        <ul>
+          <li>專案版本上傳</li>
+          <li>README 更新</li>
+          <li>畫面截圖與說明更新</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PANEL: EVALUATION ============ -->
+<section class="panel" id="evaluation">
+  <div class="section-header">
+    <div class="section-num">VI</div>
+    <div class="section-title-block">
+      <div class="eyebrow">Evaluation · 評量方式</div>
+      <h2>不以考試評量，<br/>以<em>真實求職成果</em>為導向</h2>
+    </div>
+  </div>
+
+  <div class="eval-bar">
+    <div class="eval-bar-head">
+      <h4>平時評量</h4>
+      <div class="eval-percent">40%</div>
+    </div>
+    <div class="eval-progress"><div class="fill" style="width:40%;"></div></div>
+    <p>每週出席與參與度 · 作業完成度 · Trello 與學習紀錄更新品質</p>
+  </div>
+
+  <div class="eval-bar">
+    <div class="eval-bar-head">
+      <h4>專案評量</h4>
+      <div class="eval-percent">40%</div>
+    </div>
+    <div class="eval-progress"><div class="fill" style="width:40%;"></div></div>
+    <p>主作品 A 完成度與真實性 · 主作品 B 完成度與邏輯性 · GitHub 整理與 README 品質 · 版本紀錄與測試紀錄完整度</p>
+  </div>
+
+  <div class="eval-bar">
+    <div class="eval-bar-head">
+      <h4>求職成果評量</h4>
+      <div class="eval-percent">20%</div>
+    </div>
+    <div class="eval-progress"><div class="fill" style="width:20%;"></div></div>
+    <p>個人作品集網站完成度 · 履歷品質 · 自我介紹與專案講述能力 · 模擬面試表現</p>
+  </div>
+</section>
+
+<!-- ============ PANEL: COMMITMENT ============ -->
+<section class="panel" id="commitment">
+  <div class="section-header">
+    <div class="section-num">VII</div>
+    <div class="section-title-block">
+      <div class="eyebrow">Promise & Outcomes · 承諾與最終成果</div>
+      <h2>六個月後，<br/>你應該<em>達到的狀態</em></h2>
+    </div>
+  </div>
+
+  <div class="commitment">
+    <div class="commitment-label">A Promise from your Instructor</div>
+    <p class="commitment-text">這不是一門教你背程式語法的課，<br/>而是一門幫你在六個月內，<br/>做出<strong>真實感作品集</strong>、建立 GitHub、<br/>理解資訊產品與專案工作流程，<br/>並具備初階資訊相關職務<strong>求職與面試能力</strong>的實作轉職課。</p>
+    <div class="commitment-attr">— Davidian, Course Instructor</div>
+  </div>
+
+  <div class="final-state">
+    <div class="eyebrow">Final State · 最終達成狀態</div>
+    <h3>學生完成本課程後，<br/>應至少達成以下<em>七項</em>能力</h3>
+    <ul class="final-list">
+      <li>能用白話說明網站、Web App、前端、後端、資料、流程與測試的基本概念</li>
+      <li>能用 Trello 管理自己的專案</li>
+      <li>能用 AI 工具協作完成需求整理、規格、原型、頁面與內容優化</li>
+      <li>能在 GitHub 呈現完整專案成果與文件</li>
+      <li>具備 2 個有真實場景感的作品與 1 個個人作品集網站</li>
+      <li>完成履歷、自我介紹與面試回答準備</li>
+      <li>可正式投遞初階資訊相關職位並進入面試流程</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Davidian Tutorial Studio</div>
+      <p class="footer-tagline">為零基礎學習者設計的一對一家教課程，協助你在六個月內，從零建立可求職的數位產品實作能力與作品集。</p>
+    </div>
+    <div class="footer-col">
+      <h5>Instructor</h5>
+      <p>Davidian / 陳建璋</p>
+      <p style="font-size:12px; color:var(--ink-mute);">University Professor</p>
+      <p style="font-size:12px; color:var(--ink-mute);">Taipei, Taiwan</p>
+    </div>
+    <div class="footer-col">
+      <h5>Course</h5>
+      <p>Vol. 01 · 2026</p>
+      <p style="font-size:12px; color:var(--ink-mute);">24 Weeks · 1-on-1</p>
+      <p style="font-size:12px; color:var(--ink-mute);">Traditional Chinese</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 Davidian Tutorial. All rights reserved.</div>
+    <div>Set in Fraunces & Noto Serif TC</div>
+  </div>
+</footer>
+
+</div>
+
+<script>
+// Tab switching
+const tabs = document.querySelectorAll('.tab-btn');
+const panels = document.querySelectorAll('.panel');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    tabs.forEach(t => t.classList.remove('active'));
+    panels.forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(target).classList.add('active');
+    // Scroll to top of new panel
+    window.scrollTo({ top: document.querySelector('.tabs-bar').offsetTop - 60, behavior: 'smooth' });
+  });
+});
+
+// Week card expansion
+document.querySelectorAll('.week-card').forEach(card => {
+  card.addEventListener('click', () => {
+    card.classList.toggle('expanded');
+  });
+});
+
+// Reveal on scroll (light touch)
+const revealElements = document.querySelectorAll('.stat-card, .week-card, .project-block, .eval-bar');
+revealElements.forEach(el => el.classList.add('reveal'));
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+revealElements.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
